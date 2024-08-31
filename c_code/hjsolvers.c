@@ -170,6 +170,60 @@ void dijkstra_hl_main(double *d, int *l, int *WI, int *K, double *WV, int *I, do
       }
    }
 }
+
+
+void dijkstra_main_prop(double *d, int *l, int *WI, int *K, double *WV, int *I, double *g, double *f, bool prog, int n, int M, int k, double max_prop){
+   //not sure if this is correct
+   for(int i = 0; i<k; i++){
+      dijkstra_main_prop_single(d, l, WI, K, WV, I[i], g, f, prog, n, M, k, max_prop);
+   }
+}
+
+void dijkstra_main_prop_single(double *d, int *l, int *WI, int *K, double *WV, int I, double *g, double *f, bool prog, int n, int M, int k, double max_prop){
+
+/*
+def dijkstra_proportion_single(s,seed,p):
+
+  visited = set()
+  dist = {seed: 0}
+  dist_list = [(0,seed)]
+
+  heapq.heapify(dist_list)
+
+  while dist_list and (len(visited) < math.ceil(s.shape[0]*p)):
+    current = heapq.heappop(dist_list)
+    if current[1] not in visited:
+      visited.add(current[1])
+      for node, value in zip(s[[current[1]]].indices,s[[current[1]]].data):
+        alt = dist[current[1]] + 1/value
+        if (node not in dist.keys() or alt < dist[node]):
+          dist[node] = alt
+          heapq.heappush(dist_list,(alt,node))
+        while len(dist) > math.ceil(s.shape[0]*p):
+          del dist[max(zip(dist.values(),dist.keys()))[1]]
+
+  return dist
+  */
+
+   // I copied the initializaiton from dijkstra_main
+
+   //Initialization
+   int i,j,jj;
+   int s = 0;                       //Size of heap
+   int *h = vector_int(n+1,-1);     //Active points heap (indices of active points)
+   bool *A = vector_bool(n,0);      //Active flag
+   int *p = vector_int(n,-1);       //Pointer back to heap
+   bool *V = vector_bool(n,0);      //Finalized flag
+
+   d[I] = 0; //set distance to self to 0
+   //PushHeap(d,h,s,p,I); // 
+   //s++; //increment size of heap since we added a node
+
+
+
+
+}
+
 void dijkstra_main(double *d, int *l, int *WI, int *K, double *WV, int *I, double *g, double *f, bool prog, int n, int M, int k, double max_dist){
 
 

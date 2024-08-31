@@ -188,6 +188,48 @@ static PyObject* dijkstra_hl(PyObject* self, PyObject* args)
    Py_INCREF(Py_None);
    return Py_None;
 }
+
+static PyObject* dijkstra_prop(PyObject* self, PyObject* args)
+{
+
+   double progd, max_radius;
+   PyArrayObject *d_array;
+   PyArrayObject *l_array;
+   PyArrayObject *WI_array;
+   PyArrayObject *K_array;
+   PyArrayObject *WV_array;
+   PyArrayObject *II_array;
+   PyArrayObject *g_array;
+   PyArrayObject *f_array;
+
+   /*  parse arguments */
+   if (!PyArg_ParseTuple(args, "O!O!O!O!O!O!O!O!dd", &PyArray_Type, &d_array, &PyArray_Type, &l_array, &PyArray_Type, &WI_array, &PyArray_Type, &K_array, &PyArray_Type, &WV_array, &PyArray_Type, &II_array, &PyArray_Type, &g_array,  &PyArray_Type, &f_array, &progd, &max_prop))
+      return NULL;
+
+   npy_intp *dim =  PyArray_DIMS(d_array);
+   int n = dim[0]; //Number of vertices
+   dim =  PyArray_DIMS(WI_array);
+   int M = dim[0]; //Number nonzero entries in weight matrix
+   dim =  PyArray_DIMS(II_array);
+   int k = dim[0]; //Number labeled points
+
+   double *d = (double *) PyArray_DATA(d_array);
+   int *l = (int *) PyArray_DATA(l_array);
+   int *WI = (int *) PyArray_DATA(WI_array);
+   int *K = (int *) PyArray_DATA(K_array);
+   double *WV = (double *) PyArray_DATA(WV_array);
+   int *II = (int *) PyArray_DATA(II_array);
+   double *g = (double *) PyArray_DATA(g_array);
+   double *f = (double *) PyArray_DATA(f_array);
+   bool prog = (bool)progd;
+
+   //Call main function from C code
+   dijkstra_main_prop(d,l,WI,K,WV,II,g,f,prog,n,M,k,max_prop);
+
+   Py_INCREF(Py_None);
+   return Py_None;
+}
+
 static PyObject* dijkstra(PyObject* self, PyObject* args)
 {
 

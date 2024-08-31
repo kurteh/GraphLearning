@@ -1135,6 +1135,49 @@ class graph:
         else:
             return dist_func
 
+
+    def dijkstra_prop(self, bdy_set, bdy_val=0, f=1, max_proportion=1, return_cp=False, reciprocal_weights=False):
+        #Import c extensions
+        from . import cextensions
+
+        #Convert boundary data to standard format
+        bdy_set, bdy_val = utils._boundary_handling(bdy_set, bdy_val)
+
+        #Variables
+        n = self.num_nodes
+        dist_func = np.ones((n,))*np.inf        
+        cp = -np.ones((n,),dtype=int)
+
+        #Right hand side
+        if type(f) != np.ndarray:
+            f = np.ones((n,))*f
+
+        #Type casting and memory blocking
+        dist_func = np.ascontiguousarray(dist_func,dtype=np.float64)
+        cp = np.ascontiguousarray(cp,dtype=np.int32)
+        bdy_set = np.ascontiguousarray(bdy_set,dtype=np.int32)
+        bdy_val = np.ascontiguousarray(bdy_val,dtype=np.float64)
+        f = np.ascontiguousarray(f,dtype=np.float64)
+
+        if reciprocal_weights:
+            #cextensions.dijkstra(dist_func,cp,self.J,self.K,self.Vinv,bdy_set,bdy_val,f,1.0,max_dist)
+            cextensions.dijkstra_prop(dist_func,cp,self.J,self.K,self.Vinv,bdy_set,bdy_val,f,1.0,max_proportion)
+        else:
+            #cextensions.dijkstra(dist_func,cp,self.J,self.K,self.V,bdy_set,bdy_val,f,1.0,max_dist)
+            cextensions.dijkstra_prop(dist_func,cp,self.J,self.K,self.V,bdy_set,bdy_val,f,1.0,max_proportion)
+
+        if return_cp:
+            return dist_func, cp
+        else:
+            return dist_func
+
+    def dijkstra_prop_single(self, seed, proportion = 1):
+        #return a numpy.ndarray with a proportion of values in data set close to seed
+
+
+
+        return
+
     def plaplace(self, bdy_set, bdy_val, p, tol=1e-1, max_num_it=1e6, prog=False, fast=True):
         """Game-theoretic p-Laplacian
         ======
